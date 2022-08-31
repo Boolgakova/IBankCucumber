@@ -3,17 +3,16 @@ package ru.netology.ibank.page;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import lombok.val;
+import ru.netology.ibank.data.DataHelper;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
 public class DashboardPage {
     private SelenideElement heading = $("[data-test-id=dashboard]");
-    private SelenideElement cardFirst = $x("//div[contains(@data-test-id,\"92df3f1c-a033-48e6-8390-206f6b1f56c0\")]");
-    private SelenideElement cardSecond = $x("//div[contains(@data-test-id,\"0f3f5c2a-249e-4c3d-8287-09f7a039391d\")]");
     private ElementsCollection depositButton = $$x("//span[contains(text(),'Пополнить')]");
 
-    public void verifyIsDashboardPage(){
+    public void verifyIsDashboardPage() {
         heading.shouldBe(visible);
     }
 
@@ -23,25 +22,7 @@ public class DashboardPage {
 
 
     public int getCardBalance(String id) {
-        val id1 = cardFirst.getAttribute("data-test-id");
-        val id2 = cardSecond.getAttribute("data-test-id");
-        String text = null;
-        if (id.equals("1")) {
-            for (SelenideElement card : cards) {
-                if (card.getAttribute("data-test-id").equals(id1)) {
-                    String text1 = card.text();
-                    text = text1;
-                }
-            }
-        }
-        if (id.equals("2")) {
-            for (SelenideElement card : cards) {
-                if (card.getAttribute("data-test-id").equals(id2)) {
-                    val text2 = card.text();
-                    text = text2;
-                }
-            }
-        }
+        String text = cards.findBy(text(DataHelper.getCard(id).getNumber().substring(12, 16))).getText();
         return extractBalance(text);
     }
 
@@ -52,11 +33,12 @@ public class DashboardPage {
         return Integer.parseInt(value);
     }
 
-    public void depositToSecond() {
-        depositButton.last().click();
-    }
-
-    public void depositToFirst() {
-        depositButton.first().click();
+    public void setDepositButton(String id) {
+        if (id.equals("1")) {
+            depositButton.first().click();
+        }
+        if (id.equals("2")) {
+            depositButton.last().click();
+        }
     }
 }

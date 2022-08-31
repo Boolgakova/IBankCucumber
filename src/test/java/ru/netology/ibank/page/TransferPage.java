@@ -3,6 +3,7 @@ package ru.netology.ibank.page;
 import com.codeborne.selenide.SelenideElement;
 import ru.netology.ibank.data.DataHelper;
 
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class TransferPage {
@@ -19,7 +20,7 @@ public class TransferPage {
         return new DashboardPage();
     }
 
-    public SelenideElement getError() {
-        return error;
+    public void getError() {
+        error.shouldBe(visible);
     }
 }
